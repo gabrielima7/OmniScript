@@ -144,15 +144,11 @@ main() {
     echo ""
     log_success "OmniScript installed successfully!"
     echo ""
-    echo -e "  ${CYAN}Usage:${NC}"
-    echo -e "    omniscript              # Interactive mode"
-    echo -e "    omniscript info         # System information"
-    echo -e "    omniscript search nginx # Search packages"
-    echo -e "    omniscript --help       # Full help"
+    
+    # Auto-start OmniScript interactive mode
+    echo -e "${CYAN}Starting OmniScript...${NC}"
     echo ""
-    echo -e "  ${CYAN}Uninstall:${NC}"
-    echo -e "    sudo ${INSTALL_DIR}/uninstall.sh"
-    echo ""
+    exec "$INSTALL_DIR/omniscript.sh"
 }
 
 # Handle arguments

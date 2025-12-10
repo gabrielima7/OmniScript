@@ -22,9 +22,16 @@ set -euo pipefail
 readonly OS_VERSION="0.1.0"
 readonly OS_NAME="OmniScript"
 
-# Determine script directory (works even when sourced via curl)
+# Determine script directory (resolves symlinks properly)
 if [[ -n "${BASH_SOURCE[0]:-}" ]]; then
-    OS_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    # Resolve symlinks to get actual script location
+    OS_REAL_PATH="${BASH_SOURCE[0]}"
+    while [[ -L "$OS_REAL_PATH" ]]; do
+        OS_LINK_DIR="$(cd "$(dirname "$OS_REAL_PATH")" && pwd)"
+        OS_REAL_PATH="$(readlink "$OS_REAL_PATH")"
+        [[ "$OS_REAL_PATH" != /* ]] && OS_REAL_PATH="$OS_LINK_DIR/$OS_REAL_PATH"
+    done
+    OS_SCRIPT_DIR="$(cd "$(dirname "$OS_REAL_PATH")" && pwd)"
 else
     OS_SCRIPT_DIR="${OS_INSTALL_DIR:-/opt/omniscript}"
 fi

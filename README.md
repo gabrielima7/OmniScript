@@ -2,7 +2,7 @@
 
 **Modular IaC Framework for Hybrid Deployments**
 
-Framework de Infrastructure as Code em Bash puro para orquestração de implantações híbridas.
+A pure Bash Infrastructure as Code framework for orchestrating hybrid deployments.
 
 [![ShellCheck](https://img.shields.io/badge/ShellCheck-passing-brightgreen)](https://www.shellcheck.net/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
