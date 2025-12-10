@@ -315,6 +315,15 @@ os_cmd_remove() {
 # ═══════════════════════════════════════════════════════════════════════════
 
 os_interactive_menu() {
+    # Ensure we have a proper TTY for input
+    if [[ ! -t 0 ]]; then
+        exec < /dev/tty 2>/dev/null || {
+            echo "❌ Error: No TTY available for interactive input"
+            echo "Run directly: omniscript"
+            exit 1
+        }
+    fi
+    
     os_banner
     
     while true; do
@@ -335,22 +344,31 @@ os_interactive_menu() {
             "🚪 Exit"
         )
         
+        # Use numbered selection for reliability
+        for i in "${!options[@]}"; do
+            printf '  %b[%d]%b %s\n' "$C_CYAN" "$((i + 1))" "$C_RESET" "${options[$i]}"
+        done
+        
+        echo ""
         local choice
-        choice=$(os_menu "Main Menu" "${options[@]}")
+        read -r -p "$(printf '%b▶ Select option [1-10]:%b ' "$C_CYAN" "$C_RESET")" choice
         
         case "$choice" in
-            0) os_interactive_install ;;
-            1) os_interactive_search ;;
-            2) os_cmd_info ;;
-            3) os_cmd_update ;;
-            4) os_interactive_backup ;;
-            5) os_cmd_stack ;;
-            6) os_cmd_list ;;
-            7) os_interactive_remove ;;
-            8) os_interactive_settings ;;
-            9) 
+            1) os_interactive_install ;;
+            2) os_interactive_search ;;
+            3) os_cmd_info ;;
+            4) os_cmd_update ;;
+            5) os_interactive_backup ;;
+            6) os_cmd_stack ;;
+            7) os_cmd_list ;;
+            8) os_interactive_remove ;;
+            9) os_interactive_settings ;;
+            10|0|q|Q|exit) 
                 os_log_success "Goodbye! 👋"
                 exit 0
+                ;;
+            *)
+                os_log_warn "Invalid option. Please enter 1-10."
                 ;;
         esac
     done
