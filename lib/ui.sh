@@ -71,6 +71,20 @@ os_progress_bar() {
 os_menu() {
     local title="$1"; shift
     local options=("$@")
+    
+    # Check if stdin is a terminal - if not, use numbered selection
+    if [[ ! -t 0 ]]; then
+        # Reopen stdin from /dev/tty for interactive input
+        exec < /dev/tty
+    fi
+    
+    # Check if we can use arrow key navigation
+    if [[ ! -t 0 ]] || [[ ! -t 1 ]]; then
+        # Fallback to simple numbered selection
+        os_select "$title" "${options[@]}"
+        return
+    fi
+    
     local selected=0
     local key
     
