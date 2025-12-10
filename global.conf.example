@@ -1,0 +1,37 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# OmniScript Global Configuration
+# Copy to ~/.config/omniscript/global.conf
+# ═══════════════════════════════════════════════════════════════════════════
+
+# === General ===
+DOMAIN="example.com"
+EMAIL="admin@example.com"
+TIMEZONE="America/Sao_Paulo"
+
+# === Network ===
+DNS_PRIMARY="1.1.1.1"
+DNS_SECONDARY="8.8.8.8"
+
+# === SMTP (for notifications) ===
+SMTP_HOST=""
+SMTP_PORT="587"
+SMTP_USER=""
+SMTP_PASS=""
+
+# === Proxy ===
+PROXY_HTTP=""
+PROXY_HTTPS=""
+
+# === Defaults ===
+DEFAULT_TARGET="docker"
+AUTO_UPDATE="false"
+BACKUP_DIR="/var/backups/omniscript"
+LOG_LEVEL="info"
+
+# === Security ===
+# Minimum password length for auto-generation
+PASSWORD_LENGTH="32"
+
+# === Container Defaults ===
+DEFAULT_CPU_LIMIT="2"
+DEFAULT_MEM_LIMIT="1GB"

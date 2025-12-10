@@ -1,0 +1,41 @@
+# OmniScript ignore patterns
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Runtime data
+*.pid
+*.seed
+*.pid.lock
+
+# Test coverage
+coverage/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Local config (keep example)
+global.conf
+!global.conf.example
+
+# Backups
+*.bak
+*.backup
+
+# Local environment
+.env
+.env.local
