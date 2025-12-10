@@ -148,7 +148,12 @@ main() {
     # Auto-start OmniScript interactive mode
     echo -e "${CYAN}Starting OmniScript...${NC}"
     echo ""
-    exec "$INSTALL_DIR/omniscript.sh"
+    
+    # Reopen stdin from terminal for interactive input
+    exec < /dev/tty
+    
+    # Run OmniScript (not exec, to keep tty attached)
+    "$INSTALL_DIR/omniscript.sh"
 }
 
 # Handle arguments
