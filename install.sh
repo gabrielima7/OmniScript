@@ -89,21 +89,29 @@ install_dependencies() {
 install_omniscript() {
     log_info "Installing OmniScript to $INSTALL_DIR..."
     
+    # Always remove old version to ensure fresh install
+    if [[ -d "$INSTALL_DIR" ]]; then
+        log_info "Removing old installation..."
+        sudo rm -rf "$INSTALL_DIR"
+    fi
+    
     # Create directory
     sudo mkdir -p "$INSTALL_DIR"
     
-    # Clone or download
-    if [[ -d "$INSTALL_DIR/.git" ]]; then
-        log_info "Updating existing installation..."
-        cd "$INSTALL_DIR"
-        sudo git pull origin "$BRANCH"
-    else
-        log_info "Downloading OmniScript..."
-        sudo git clone -b "$BRANCH" "$REPO_URL" "$INSTALL_DIR" 2>/dev/null || {
+    # Download fresh copy
+    log_info "Downloading OmniScript..."
+    
+    # Try git clone first
+    if command -v git &>/dev/null; then
+        sudo git clone --depth 1 -b "$BRANCH" "$REPO_URL" "$INSTALL_DIR" 2>/dev/null || {
             # Fallback: download archive
             curl -sSL "${REPO_URL}/archive/refs/heads/${BRANCH}.tar.gz" | sudo tar -xz -C /opt/
             sudo mv "/opt/OmniScript-${BRANCH}" "$INSTALL_DIR"
         }
+    else
+        # No git, use curl
+        curl -sSL "${REPO_URL}/archive/refs/heads/${BRANCH}.tar.gz" | sudo tar -xz -C /opt/
+        sudo mv "/opt/OmniScript-${BRANCH}" "$INSTALL_DIR"
     fi
     
     # Make executable

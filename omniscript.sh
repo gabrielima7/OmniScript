@@ -530,6 +530,11 @@ os_load_adapter() {
 # ═══════════════════════════════════════════════════════════════════════════
 
 main() {
+    # Ensure stdin is connected to terminal for interactive input
+    if [[ ! -t 0 ]]; then
+        exec < /dev/tty 2>/dev/null || true
+    fi
+    
     # Create config directory if needed
     mkdir -p "$OS_CONFIG_DIR" "$OS_CACHE_DIR"
     
