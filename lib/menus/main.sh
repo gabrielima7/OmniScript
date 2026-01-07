@@ -69,6 +69,7 @@ os_quick_install_menu() {
         echo ""
         
         # Define popular apps based on target
+        # Option 0 is standardized as Back
         local apps=(
             "Portainer - Container management UI"
             "Nginx Proxy Manager - Reverse proxy with SSL"
@@ -78,7 +79,6 @@ os_quick_install_menu() {
             "Uptime Kuma - Uptime monitoring"
             "Netdata - Real-time monitoring"
             "Nextcloud - Self-hosted cloud"
-            "Back"
         )
         
         os_select "Select application" "${apps[@]}"
@@ -92,7 +92,7 @@ os_quick_install_menu() {
             5) os_install_module "uptime-kuma" ;;
             6) os_install_module "netdata" ;;
             7) os_install_module "nextcloud" ;;
-            8|255) return ;;
+            255) return ;;
         esac
         
         echo ""
@@ -119,7 +119,6 @@ os_applications_menu() {
             "☁️ Cloud & Storage"
             "📧 Communication"
             "🎮 Media & Gaming"
-            "Back"
         )
         
         os_select "Select category" "${categories[@]}"
@@ -133,7 +132,7 @@ os_applications_menu() {
             5) os_category_cloud ;;
             6) os_category_communication ;;
             7) os_category_media ;;
-            8|255) return ;;
+            255) return ;;
         esac
     done
 }

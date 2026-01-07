@@ -221,6 +221,10 @@ run_omniscript() {
     
     if [[ "${response,,}" == "y" ]] || [[ "${response,,}" == "yes" ]]; then
         exec "${INSTALL_DIR}/omniscript.sh"
+    else
+        echo ""
+        echo "Exiting..."
+        exit 0
     fi
 }
 

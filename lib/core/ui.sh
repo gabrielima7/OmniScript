@@ -322,13 +322,14 @@ os_select() {
     for i in "${!options[@]}"; do
         echo -e "  ${C_CYAN}[$((i+1))]${C_RESET} ${options[$i]}"
     done
+    echo -e "  ${C_CYAN}[0]${C_RESET} Back"
     echo ""
     
     while true; do
-        echo -ne "  ${C_PRIMARY}${prompt}${C_RESET} ${C_DIM}(1-${#options[@]}, q=quit):${C_RESET} "
+        echo -ne "  ${C_PRIMARY}${prompt}${C_RESET} ${C_DIM}(1-${#options[@]}, 0=back):${C_RESET} "
         read -r selection
         
-        if [[ "$selection" == "q" ]] || [[ "$selection" == "Q" ]]; then
+        if [[ "$selection" == "q" ]] || [[ "$selection" == "Q" ]] || [[ "$selection" == "0" ]]; then
             return 255
         fi
         
