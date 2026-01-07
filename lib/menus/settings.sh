@@ -29,6 +29,7 @@ os_settings_menu() {
             "Set Email (for SSL)" \
             "Toggle Auto-update" \
             "Manage Secrets" \
+            "Security Hardening" \
             "Clear Caches" \
             "Reset Configuration" \
             "About OmniScript"
@@ -39,9 +40,10 @@ os_settings_menu() {
             2) os_settings_email ;;
             3) os_settings_autoupdate ;;
             4) os_settings_secrets ;;
-            5) os_settings_clear_cache ;;
-            6) os_settings_reset ;;
-            7) os_settings_about ;;
+            5) os_hardening_menu ;;
+            6) os_settings_clear_cache ;;
+            7) os_settings_reset ;;
+            8) os_settings_about ;;
             255) return ;;
         esac
     done

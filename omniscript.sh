@@ -75,6 +75,7 @@ load_library "${OS_LIB_DIR}/features/security.sh"
 load_library "${OS_LIB_DIR}/features/backup.sh"
 load_library "${OS_LIB_DIR}/features/autotag.sh"
 load_library "${OS_LIB_DIR}/features/update.sh"
+load_library "${OS_LIB_DIR}/features/hardening.sh"
 
 # Load menu libraries
 load_library "${OS_LIB_DIR}/menus/main.sh"
