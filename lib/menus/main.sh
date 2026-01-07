@@ -16,27 +16,15 @@ os_main_menu() {
         
         os_menu_header "Main Menu"
         
-        os_menu_item "1" "${EMOJI_ROCKET}" "Quick Install" "Deploy popular applications"
-        os_menu_item "2" "${EMOJI_PACKAGE}" "Applications" "Browse application categories"
-        os_menu_item "3" "${EMOJI_BUILDER}" "Builder Stack" "Compose complete environments"
-        os_menu_item "4" "${EMOJI_SEARCH}" "Search" "Search for applications and images"
-        os_menu_divider
-        os_menu_item "5" "${EMOJI_BACKUP}" "Backup/Restore" "Manage deployment backups"
-        os_menu_item "6" "${EMOJI_UPDATE}" "Updates" "Update deployments and OmniScript"
-        os_menu_item "7" "${EMOJI_GEAR}" "Settings" "Configure OmniScript"
-        os_menu_divider
-        os_menu_item "0" "🚪" "Exit" ""
-        
-        echo ""
+        # Options with descriptions
         os_select "Choose option" \
-            "Quick Install" \
-            "Applications" \
-            "Builder Stack" \
-            "Search" \
-            "Backup/Restore" \
-            "Updates" \
-            "Settings" \
-            "Exit"
+            "${EMOJI_ROCKET} Quick Install - Deploy popular applications" \
+            "${EMOJI_PACKAGE} Applications - Browse application categories" \
+            "${EMOJI_BUILDER} Builder Stack - Compose complete environments" \
+            "${EMOJI_SEARCH} Search - Search for applications and images" \
+            "${EMOJI_BACKUP} Backup/Restore - Manage deployment backups" \
+            "${EMOJI_UPDATE} Updates - Update deployments and OmniScript" \
+            "${EMOJI_GEAR} Settings - Configure OmniScript"
         
         case $OS_SELECTED_INDEX in
             0) os_quick_install_menu ;;
@@ -46,7 +34,7 @@ os_main_menu() {
             4) os_backup_menu ;;
             5) os_update_menu ;;
             6) os_settings_menu ;;
-            7|255) 
+            255) 
                 os_clear_screen
                 os_success "Thanks for using OmniScript! ${EMOJI_ROCKET}"
                 exit 0

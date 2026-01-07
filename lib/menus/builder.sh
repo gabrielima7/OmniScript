@@ -36,14 +36,13 @@ os_builder_menu() {
         os_select "Choose option" \
             "Use Template" \
             "Custom Stack" \
-            "Manage Stacks" \
-            "Back"
+            "Manage Stacks"
         
         case $OS_SELECTED_INDEX in
             0) os_builder_templates ;;
             1) os_builder_custom ;;
             2) os_builder_manage ;;
-            3|255) return ;;
+            255) return ;;
         esac
     done
 }

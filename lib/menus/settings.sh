@@ -31,8 +31,7 @@ os_settings_menu() {
             "Manage Secrets" \
             "Clear Caches" \
             "Reset Configuration" \
-            "About OmniScript" \
-            "Back"
+            "About OmniScript"
         
         case $OS_SELECTED_INDEX in
             0) os_settings_target ;;
@@ -43,7 +42,7 @@ os_settings_menu() {
             5) os_settings_clear_cache ;;
             6) os_settings_reset ;;
             7) os_settings_about ;;
-            8|255) return ;;
+            255) return ;;
         esac
     done
 }
