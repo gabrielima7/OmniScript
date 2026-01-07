@@ -67,6 +67,7 @@ load_library "${OS_LIB_DIR}/core/utils.sh"
 load_library "${OS_LIB_DIR}/core/ui.sh"
 load_library "${OS_LIB_DIR}/core/distro.sh"
 load_library "${OS_LIB_DIR}/core/targets.sh"
+load_library "${OS_LIB_DIR}/core/remote.sh"
 
 # Load feature libraries
 load_library "${OS_LIB_DIR}/features/search.sh"
@@ -129,6 +130,7 @@ Commands:
     search <term>           Search for applications/images
     backup <target>         Backup a deployment
     restore <backup>        Restore from backup
+    remote [cmd]            Remote management (add|list|remove|exec)
     update                  Update OmniScript
     
 Options:
@@ -187,7 +189,7 @@ parse_args() {
                 show_version
                 exit 0
                 ;;
-            install|remove|search|backup|restore|update)
+            install|remove|search|backup|restore|update|remote)
                 OS_COMMAND="$1"
                 shift
                 OS_COMMAND_ARGS=("$@")
@@ -224,6 +226,21 @@ handle_command() {
             ;;
         update)
             os_self_update
+            ;;
+        remote)
+            if [[ ${#OS_COMMAND_ARGS[@]} -eq 0 ]]; then
+                os_remote_menu
+            else
+                local subcmd="${OS_COMMAND_ARGS[0]}"
+                local args=("${OS_COMMAND_ARGS[@]:1}")
+                case "$subcmd" in
+                    add) os_remote_add "${args[@]}" ;;
+                    list) os_remote_list ;;
+                    remove) os_remote_remove "${args[@]}" ;;
+                    exec) os_remote_exec "${args[@]}" ;;
+                    *) os_error "Unknown remote command: $subcmd" ;;
+                esac
+            fi
             ;;
         "")
             # No command - launch TUI

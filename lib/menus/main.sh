@@ -24,7 +24,8 @@ os_main_menu() {
             "${EMOJI_SEARCH} Search - Search for applications and images" \
             "${EMOJI_BACKUP} Backup/Restore - Manage deployment backups" \
             "${EMOJI_UPDATE} Updates - Update deployments and OmniScript" \
-            "${EMOJI_GEAR} Settings - Configure OmniScript"
+            "${EMOJI_GEAR} Settings - Configure OmniScript" \
+            "🌐 Remote Management - Agentless SSH control"
         
         case $OS_SELECTED_INDEX in
             0) os_quick_install_menu ;;
@@ -34,6 +35,7 @@ os_main_menu() {
             4) os_backup_menu ;;
             5) os_update_menu ;;
             6) os_settings_menu ;;
+            7) os_remote_menu ;;
             255) 
                 os_clear_screen
                 os_success "Thanks for using OmniScript! ${EMOJI_ROCKET}"
