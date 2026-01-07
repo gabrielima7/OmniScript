@@ -11,7 +11,7 @@
 OS_LAZY_LOAD="${OS_LAZY_LOAD:-true}"
 
 # Libraries loaded on demand
-declare -A OS_LAZY_LIBS=(
+declare -gA OS_LAZY_LIBS=(
     [search]="lib/features/search.sh"
     [autotag]="lib/features/autotag.sh"
     [security]="lib/features/security.sh"

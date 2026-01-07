@@ -8,26 +8,26 @@
 #-------------------------------------------------------------------------------
 # Target Variables
 #-------------------------------------------------------------------------------
-declare -a OS_AVAILABLE_TARGETS=()
+declare -ga OS_AVAILABLE_TARGETS=()
 OS_CURRENT_TARGET=""
 OS_DEFAULT_TARGET="auto"
 
 # Target metadata
-declare -A OS_TARGET_NAMES=(
+declare -gA OS_TARGET_NAMES=(
     [docker]="Docker"
     [podman]="Podman"
     [lxc]="LXC/LXD"
     [baremetal]="Bare Metal"
 )
 
-declare -A OS_TARGET_ICONS=(
+declare -gA OS_TARGET_ICONS=(
     [docker]="${EMOJI_DOCKER}"
     [podman]="${EMOJI_PODMAN}"
     [lxc]="${EMOJI_LXC}"
     [baremetal]="${EMOJI_METAL}"
 )
 
-declare -A OS_TARGET_DESCRIPTIONS=(
+declare -gA OS_TARGET_DESCRIPTIONS=(
     [docker]="Docker containers with Compose"
     [podman]="Rootless containers"
     [lxc]="System containers (LXD)"

@@ -8,7 +8,7 @@
 #-------------------------------------------------------------------------------
 # Stack Templates
 #-------------------------------------------------------------------------------
-declare -A OS_STACK_TEMPLATES=(
+declare -gA OS_STACK_TEMPLATES=(
     [lemp]="Linux + Nginx + MySQL + PHP"
     [mean]="MongoDB + Express + Angular + Node"
     [mern]="MongoDB + Express + React + Node"
