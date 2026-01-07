@@ -330,6 +330,7 @@ os_select() {
         read -r selection
         
         if [[ "$selection" == "q" ]] || [[ "$selection" == "Q" ]] || [[ "$selection" == "0" ]]; then
+            OS_SELECTED_INDEX=255
             return 255
         fi
         
