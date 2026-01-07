@@ -1,0 +1,199 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  shellcheck:
+    name: ShellCheck
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master
+        with:
+          severity: warning
+          scandir: '.'
+          format: tty
+        env:
+          SHELLCHECK_OPTS: -e SC2120 -e SC2178
+
+  syntax-check:
+    name: Bash Syntax Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check Shell Script Syntax
+        run: |
+          find . -name "*.sh" -type f | while read -r file; do
+            echo "Checking: $file"
+            bash -n "$file" || exit 1
+          done
+          echo "✓ All scripts have valid syntax"
+
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup BATS
+        run: |
+          git clone https://github.com/bats-core/bats-core.git
+          cd bats-core
+          sudo ./install.sh /usr/local
+          cd ..
+          git clone https://github.com/bats-core/bats-support.git tests/test_helper/bats-support
+          git clone https://github.com/bats-core/bats-assert.git tests/test_helper/bats-assert
+
+      - name: Run Unit Tests
+        run: |
+          bats tests/
+
+  multi-distro:
+    name: Multi-Distro Test
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        distro:
+          - ubuntu:22.04
+          - ubuntu:24.04
+          - debian:12
+          - fedora:39
+          - archlinux:latest
+          - alpine:3.19
+    container:
+      image: ${{ matrix.distro }}
+    steps:
+      - name: Install Dependencies
+        run: |
+          if command -v apt-get &> /dev/null; then
+            apt-get update && apt-get install -y curl git bash
+          elif command -v dnf &> /dev/null; then
+            dnf install -y curl git bash
+          elif command -v pacman &> /dev/null; then
+            pacman -Sy --noconfirm curl git bash
+          elif command -v apk &> /dev/null; then
+            apk add --no-cache curl git bash
+          fi
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Test Distribution Detection
+        run: |
+          source lib/core/utils.sh
+          source lib/core/ui.sh
+          source lib/core/distro.sh
+          os_detect_distro
+          echo "Detected: ${OS_DISTRO_NAME} ${OS_DISTRO_VERSION}"
+          echo "Family: ${OS_DISTRO_FAMILY}"
+          echo "Package Manager: ${OS_PKG_MANAGER}"
+          test -n "$OS_DISTRO_ID" || exit 1
+          test -n "$OS_PKG_MANAGER" || exit 1
+
+  docker-test:
+    name: Docker Integration
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Docker
+        uses: docker/setup-buildx-action@v3
+
+      - name: Test Docker Adapter
+        run: |
+          # Source libraries
+          export OS_SCRIPT_DIR="$(pwd)"
+          export OS_LIB_DIR="${OS_SCRIPT_DIR}/lib"
+          export OS_DATA_DIR="/tmp/omniscript-test"
+          export OS_CONFIG_FILE="${OS_DATA_DIR}/config.conf"
+          export OS_LOG_FILE="${OS_DATA_DIR}/test.log"
+          
+          mkdir -p "$OS_DATA_DIR"
+          
+          source lib/core/utils.sh
+          source lib/core/ui.sh
+          source lib/core/distro.sh
+          source lib/core/targets.sh
+          source lib/targets/docker.sh
+          
+          # Test Docker check
+          os_docker_check && echo "✓ Docker is available"
+          
+          # Test compose command detection
+          compose_cmd=$(os_docker_compose_cmd)
+          echo "✓ Compose command: $compose_cmd"
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '0'
+
+  python-tools:
+    name: Python Tools Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          pip install pytest requests pyyaml
+
+      - name: Run Python Tests
+        run: |
+          if [ -d "tools" ]; then
+            python -m pytest tools/ -v
+          else
+            echo "No Python tools to test"
+          fi
+
+  release:
+    name: Create Release
+    needs: [shellcheck, syntax-check, unit-tests]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create Release Archive
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          tar -czf omniscript-${VERSION}.tar.gz \
+            --exclude='.git*' \
+            --exclude='tests' \
+            .
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: omniscript-*.tar.gz
+          generate_release_notes: true

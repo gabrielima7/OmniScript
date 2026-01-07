@@ -1,0 +1,61 @@
+# Editor and IDE Configuration
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Ruff & Mypy
+.ruff_cache/
+.mypy_cache/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Runtime data
+*.pid
+*.sock
+
+# Docker artifacts
+docker-compose.override.yml
+
+# Secrets (never commit!)
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+secrets/
+
+# Backup files
+*.bak
+*.backup
+
+# Cache directories
+cache/
+.cache/
