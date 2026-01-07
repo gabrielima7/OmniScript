@@ -18,6 +18,7 @@ declare -gA OS_TARGET_NAMES=(
     [podman]="Podman"
     [lxc]="LXC/LXD"
     [baremetal]="Bare Metal"
+    [k8s]="Kubernetes"
 )
 
 declare -gA OS_TARGET_ICONS=(
@@ -25,6 +26,7 @@ declare -gA OS_TARGET_ICONS=(
     [podman]="${EMOJI_PODMAN}"
     [lxc]="${EMOJI_LXC}"
     [baremetal]="${EMOJI_METAL}"
+    [k8s]="☸️"
 )
 
 declare -gA OS_TARGET_DESCRIPTIONS=(
@@ -32,6 +34,7 @@ declare -gA OS_TARGET_DESCRIPTIONS=(
     [podman]="Rootless containers"
     [lxc]="System containers (LXD)"
     [baremetal]="Native packages"
+    [k8s]="Container Orchestration"
 )
 
 #-------------------------------------------------------------------------------
@@ -60,6 +63,11 @@ os_detect_targets() {
     
     # Bare Metal is always available
     OS_AVAILABLE_TARGETS+=("baremetal")
+    
+    # K8s Detection
+    if os_target_check_k8s; then
+        OS_AVAILABLE_TARGETS+=("k8s")
+    fi
     
     # Set default target
     if [[ "${OS_DEFAULT_TARGET}" == "auto" ]]; then
@@ -149,6 +157,7 @@ os_target_deploy() {
         podman)  os_podman_deploy "$module_name" "$@" ;;
         lxc)     os_lxc_deploy "$module_name" "$@" ;;
         baremetal) os_baremetal_deploy "$module_name" "$@" ;;
+        k8s)     os_k8s_deploy "$module_name" "$@" ;;
         *) os_fatal "Unknown target: ${OS_CURRENT_TARGET}" ;;
     esac
 }
@@ -164,6 +173,7 @@ os_target_remove() {
         podman)  os_podman_remove "$deployment_name" ;;
         lxc)     os_lxc_remove "$deployment_name" ;;
         baremetal) os_baremetal_remove "$deployment_name" ;;
+        k8s)     os_k8s_remove "$deployment_name" ;;
         *) os_fatal "Unknown target: ${OS_CURRENT_TARGET}" ;;
     esac
 }
@@ -177,6 +187,7 @@ os_target_list() {
         podman)  os_podman_list ;;
         lxc)     os_lxc_list ;;
         baremetal) os_baremetal_list ;;
+        k8s)     os_k8s_list ;;
         *) os_fatal "Unknown target: ${OS_CURRENT_TARGET}" ;;
     esac
 }
@@ -192,6 +203,7 @@ os_target_status() {
         podman)  os_podman_status "$deployment_name" ;;
         lxc)     os_lxc_status "$deployment_name" ;;
         baremetal) os_baremetal_status "$deployment_name" ;;
+        k8s)     os_k8s_status "$deployment_name" ;;
         *) os_fatal "Unknown target: ${OS_CURRENT_TARGET}" ;;
     esac
 }
@@ -207,6 +219,7 @@ os_target_start() {
         podman)  os_podman_start "$deployment_name" ;;
         lxc)     os_lxc_start "$deployment_name" ;;
         baremetal) os_baremetal_start "$deployment_name" ;;
+        k8s)     os_k8s_start "$deployment_name" ;;
         *) os_fatal "Unknown target: ${OS_CURRENT_TARGET}" ;;
     esac
 }
@@ -222,6 +235,7 @@ os_target_stop() {
         podman)  os_podman_stop "$deployment_name" ;;
         lxc)     os_lxc_stop "$deployment_name" ;;
         baremetal) os_baremetal_stop "$deployment_name" ;;
+        k8s)     os_k8s_stop "$deployment_name" ;;
         *) os_fatal "Unknown target: ${OS_CURRENT_TARGET}" ;;
     esac
 }
@@ -237,6 +251,7 @@ os_target_restart() {
         podman)  os_podman_restart "$deployment_name" ;;
         lxc)     os_lxc_restart "$deployment_name" ;;
         baremetal) os_baremetal_restart "$deployment_name" ;;
+        k8s)     os_k8s_restart "$deployment_name" ;;
         *) os_fatal "Unknown target: ${OS_CURRENT_TARGET}" ;;
     esac
 }
@@ -253,6 +268,7 @@ os_target_logs() {
         podman)  os_podman_logs "$deployment_name" "$lines" ;;
         lxc)     os_lxc_logs "$deployment_name" "$lines" ;;
         baremetal) os_baremetal_logs "$deployment_name" "$lines" ;;
+        k8s)     os_k8s_logs "$deployment_name" "$lines" ;;
         *) os_fatal "Unknown target: ${OS_CURRENT_TARGET}" ;;
     esac
 }
@@ -269,6 +285,7 @@ os_target_exec() {
         podman)  os_podman_exec "$deployment_name" "$@" ;;
         lxc)     os_lxc_exec "$deployment_name" "$@" ;;
         baremetal) os_baremetal_exec "$deployment_name" "$@" ;;
+        k8s)     os_k8s_exec "$deployment_name" "$@" ;;
         *) os_fatal "Unknown target: ${OS_CURRENT_TARGET}" ;;
     esac
 }
@@ -285,6 +302,7 @@ os_target_backup() {
         podman)  os_podman_backup "$deployment_name" "$backup_path" ;;
         lxc)     os_lxc_backup "$deployment_name" "$backup_path" ;;
         baremetal) os_baremetal_backup "$deployment_name" "$backup_path" ;;
+        k8s)     os_k8s_backup "$deployment_name" "$backup_path" ;;
         *) os_fatal "Unknown target: ${OS_CURRENT_TARGET}" ;;
     esac
 }
@@ -301,6 +319,7 @@ os_target_restore() {
         podman)  os_podman_restore "$backup_path" "$deployment_name" ;;
         lxc)     os_lxc_restore "$backup_path" "$deployment_name" ;;
         baremetal) os_baremetal_restore "$backup_path" "$deployment_name" ;;
+        k8s)     os_k8s_restore "$backup_path" "$deployment_name" ;;
         *) os_fatal "Unknown target: ${OS_CURRENT_TARGET}" ;;
     esac
 }
@@ -316,6 +335,7 @@ os_target_update() {
         podman)  os_podman_update "$deployment_name" ;;
         lxc)     os_lxc_update "$deployment_name" ;;
         baremetal) os_baremetal_update "$deployment_name" ;;
+        k8s)     os_k8s_update "$deployment_name" ;;
         *) os_fatal "Unknown target: ${OS_CURRENT_TARGET}" ;;
     esac
 }
